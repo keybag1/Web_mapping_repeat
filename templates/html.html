@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    #Display{
+        height: 400px;
+        position: relative;
+        width: 700px;
+    }
+</style>
+
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% load static %}
+
+<head>
+    <title>World Cities</title>
+    <link rel="manifest" href="static/manifest.json"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+    <link rel="stylesheet"
+        href="//unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+
+<body>
+<h1>A Map Showing the Cities Around the World</h1>
+
+<div id="Display"></div>
+
+</body>
+
+<script>
+let map = L.map('Display').setView([42.5, 1.5], 4);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+
+{% for e in city %}
+    L.circleMarker({{ e.lat_long}}, {{ titles }}).addTo(map);
+{% endfor %}
+
+
+registerServiceWorker();
+async function registerServiceWorker() {
+    //call object
+    if ('serviceWorker' in navigator) {
+        try {
+            //read in js file
+            await navigator.serviceWorker.register('./static/serviceworker.js');
+        } catch (e) {
+            console.log("error")
+        }
+    }
+}
+</script>
+</html>
